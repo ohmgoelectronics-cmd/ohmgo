@@ -1,0 +1,257 @@
+/* ======= Reset & Base Styles ======= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* ======= Header & Nav ======= */
+header {
+  background: #004d99;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 0;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* ======= Main / Sections ======= */
+main {
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 40px;
+}
+
+section h2 {
+  color: #004d99;
+  margin-bottom: 15px;
+}
+
+/* ======= New Product Form ======= */
+#new-product-form {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+#new-product-form input[type="text"],
+#new-product-form input[type="number"],
+#new-product-form input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#new-product-form button {
+  padding: 8px 15px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#new-product-form button:hover {
+  background: #1e7e34;
+}
+
+/* ======= Product Grid ======= */
+.product-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+/* ======= Product Card ======= */
+.product-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin: 0 auto 10px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.product-card img:hover {
+  transform: scale(1.05);
+}
+
+.product-card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  flex-grow: 1;
+}
+
+.product-card p {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Buttons inside product card */
+.product-card button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background: #004d99;
+  color: white;
+  cursor: pointer;
+  margin: 3px 0;
+}
+
+.product-card button:hover {
+  background: #003366;
+}
+
+/* Hidden file input (for replace) */
+.product-card input[type="file"] {
+  display: none;
+}
+
+/* ======= Cart Section ======= */
+#cart-items {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f1f1f1;
+  margin-bottom: 10px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.cart-item button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cart-item button:hover {
+  background: darkred;
+}
+
+#continue-btn,
+#whatsapp-checkout button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background: #28a745;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#continue-btn:hover,
+#whatsapp-checkout button:hover {
+  background: #1e7e34;
+}
+
+/* ======= Back to Top Button ======= */
+#backToTopBtn {
+  display: none; /* Hidden by default */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: #004d99;
+  color: white;
+  cursor: pointer;
+}
+
+#backToTopBtn:hover {
+  background: #003366;
+}
+
+/* ======= Contact Section ======= */
+#contact p {
+  margin-bottom: 8px;
+}
+
+#contact a {
+  color: #004d99;
+  text-decoration: none;
+}
+
+#contact a:hover {
+  text-decoration: underline;
+}
+
+/* ======= Footer ======= */
+footer {
+  text-align: center;
+  padding: 15px 0;
+  background: #eee;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* ======= Responsive Styles ======= */
+@media (max-width: 600px) {
+  /* On small screens, make new-product-form inputs full width */
+  #new-product-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #new-product-form input,
+  #new-product-form button {
+    width: 100%;
+  }
+
+  /* Reduce padding on product cards */
+  .product-card {
+    padding: 8px;
+  }
+}
