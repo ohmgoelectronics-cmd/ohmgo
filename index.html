@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OhmGo - Electronics Components</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>OhmGo</h1>
+    <nav>
+      <ul>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#cart">Cart (<span id="cart-count">0</span>)</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="products">
+      <h2>Products</h2>
+
+      <!-- Hint: Form to add new product, including image upload -->
+      <div id="new-product-form">
+        <input type="text" id="newProductName" placeholder="Product name">
+        <input type="number" id="newProductPrice" placeholder="Price (₹)">
+        <input type="file" id="newProductImage" accept="image/*">
+        <button type="button" onclick="addNewProduct()">Add Product</button>
+      </div>
+
+      <input type="text" id="search" placeholder="Search Products…">
+      <div id="product-container" class="product-container"></div>
+    </section>
+
+    <section id="cart">
+      <h2>Cart</h2>
+      <div id="cart-items"><p>Your cart is empty.</p></div>
+      <p id="total-price"></p>
+      <button id="continue-btn" style="display:none;" onclick="showWhatsAppCheckout()">Continue</button>
+      <div id="whatsapp-checkout" style="display:none;">
+        <button onclick="checkoutWhatsApp()">Checkout via WhatsApp</button>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <p>Email: <a href="mailto:ohmgoelectronics@gmail.com">ohmgoelectronics@gmail.com</a></p>
+      <p>Instagram: <a href="https://www.instagram.com/ohmgo.in" target="_blank">@ohmgo.in</a></p>
+      <p>WhatsApp: <a href="https://wa.me/919010532390" target="_blank">+91 9010532390</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 OhmGo. All rights reserved.</p>
+  </footer>
+
+  <button id="backToTopBtn" title="Go to top">↑ Top</button>
+
+  <script>
+    // ==================== COMPONENT NAMES (some sample) ====================
+    const uniqueComponents = [
+      "Arduino UNO R3","Arduino Mega 2560","Arduino Nano","Arduino Leonardo","Arduino Micro",
+      "ESP32 Dev Board","ESP8266 NodeMCU","Raspberry Pi 4 Model B","Raspberry Pi 3 Model B+","Raspberry Pi Zero W",
+      // … you can continue adding up to 1000
+    ];
+
+    // ==================== PRICES ====================
+    const componentPrices = {
+      "Arduino UNO R3": 575,
+      "Arduino Mega 2560": 950,
+      "Arduino Nano": 250,
+      "Arduino Leonardo": 550,
+      "Arduino Micro": 500,
+      "ESP32 Dev Board": 350,
+      "ESP8266 NodeMCU": 300,
+      "Raspberry Pi 4 Model B": 4899,
+      "Raspberry Pi 3 Model B+": 3999,
+      "Raspberry Pi Zero W": 700,
+      // … continue mapping
+    };
+
+    // ==================== PRODUCTS ====================
+    const products = uniqueComponents.map(name => {
+      const price = componentPrices[name] || 50;
+      const image = `https://via.placeholder.com/150?text=${encodeURIComponent(name)}`;
+      return { name, price, image };
+    });
+
+    // ==================== DISPLAY PRODUCTS ====================
+    const initialDisplayCount = 30;
+
+    function displayProducts(list) {
+      const container = document.getElementById("product-container");
+      container.innerHTML = "";
+      const toShow = list.slice(0, initialDisplayCount);
+      toShow.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" style="width:150px;height:150px;cursor:pointer;"
+               onclick="changeImage('${product.name}')">
+          <h3>${product.name}</h3>
+          <p>Price: ₹${product.price}</p>
+          <button onclick="addToCart('${product.name}')">Add to Cart</button>
+          <button onclick="triggerFileUpload('${product.name}')">Replace Image</button>
+          <input type="file" id="fileUpload-${product.name}" style="display:none;" accept="image/*">
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ==================== IMAGE REPLACE via URL (existing) ====================
+    function changeImage(name) {
+      const url = prompt(`Enter new image URL for ${name}:`);
+      if (url) {
+        const p = products.find(p => p.name === name);
+        p.image = url;
+        displayProducts(products);
+      }
+    }
+
+    // ==================== IMAGE REPLACE via File Upload ====================
+    function triggerFileUpload(name) {
+      const input = document.getElementById(`fileUpload-${name}`);
+      input.onchange = () => {
+        const file = input.files[0];
+        if (file) handleFileReplace(name, file);
+      };
+      input.click();
+    }
+
+    function handleFileReplace(name, file) {
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        return;
+      }
+      const p = products.find(p => p.name === name);
+      // Hint: use URL.createObjectURL for preview locally
+      p.image = URL.createObjectURL(file);
+      displayProducts(products);
+      // If you have server upload logic, here you could upload the file
+      // then on success set p.image = returnedServerURL and re-display.
+    }
+
+    // ==================== ADD NEW PRODUCT (with image upload) ====================
+    function addNewProduct() {
+      const nameInput = document.getElementById("newProductName");
+      const priceInput = document.getElementById("newProductPrice");
+      const imageInput = document.getElementById("newProductImage");
+
+      const name = nameInput.value.trim();
+      const price = parseFloat(priceInput.value);
+      const file = imageInput.files[0];
+
+      if (!name) {
+        alert("Please enter a product name.");
+        return;
+      }
+      if (isNaN(price) || price <= 0) {
+        alert("Please enter a valid price.");
+        return;
+      }
+
+      let imageURL = `https://via.placeholder.com/150?text=${encodeURIComponent(name)}`;
+      if (file) {
+        if (!file.type.startsWith("image/")) {
+          alert("Uploaded file is not an image.");
+          return;
+        }
+        imageURL = URL.createObjectURL(file);
+      }
+
+      // Add to products list
+      products.unshift({ name, price, image: imageURL });
+
+      // Clear form
+      nameInput.value = "";
+      priceInput.value = "";
+      imageInput.value = "";
+
+      displayProducts(products);
+    }
+
+    // ==================== CART LOGIC ====================
+    let cart = [];
+    function addToCart(name) {
+      const p = products.find(p => p.name === name);
+      cart.push(p);
+      updateCart();
+    }
+    function removeFromCart(i) {
+      cart.splice(i, 1);
+      updateCart();
+    }
+    function updateCart() {
+      const container = document.getElementById("cart-items");
+      const totalEl = document.getElementById("total-price");
+      container.innerHTML = "";
+      if (cart.length === 0) {
+        container.innerHTML = "<p>Your cart is empty.</p>";
+        totalEl.textContent = "";
+        document.getElementById("continue-btn").style.display = "none";
+        document.getElementById("cart-count").textContent = 0;
+        return;
+      }
+      let total = 0;
+      cart.forEach((item, i) => {
+        total += item.price;
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `<span>${item.name} - ₹${item.price}</span>
+                         <button onclick="removeFromCart(${i})">Remove</button>`;
+        container.appendChild(div);
+      });
+      totalEl.textContent = `Total: ₹${total}`;
+      document.getElementById("continue-btn").style.display = "block";
+      document.getElementById("cart-count").textContent = cart.length;
+    }
+
+    // ==================== WHATSAPP CHECKOUT ====================
+    function showWhatsAppCheckout() {
+      document.getElementById("whatsapp-checkout").style.display = "block";
+    }
+    function checkoutWhatsApp() {
+      if (cart.length === 0) return;
+      let msg = "Hello, I want to buy these items:\n";
+      cart.forEach(item => msg += `- ${item.name} : ₹${item.price}\n`);
+      msg += `Total: ₹${cart.reduce((a, b) => a + b.price, 0)}`;
+      window.open(`https://wa.me/919010532390?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    // ==================== SEARCH & BACK-TO-TOP ====================
+    document.getElementById("search").addEventListener("input", function(){
+      const val = this.value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(val));
+      displayProducts(filtered.length ? filtered : products);
+    });
+
+    const topBtn = document.getElementById("backToTopBtn");
+    window.onscroll = function(){
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        topBtn.style.display = "block";
+      } else {
+        topBtn.style.display = "none";
+      }
+    };
+    topBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    // ==================== INITIAL LOAD ====================
+    displayProducts(products);
+    updateCart();
+
+  </script>
+
+</body>
+</html>
